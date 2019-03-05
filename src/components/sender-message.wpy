@@ -1,0 +1,50 @@
+<style lang='less'>
+view {
+  width: 100%;
+}
+.sender-box {
+  width: 100%;
+  padding: 12px;
+  display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  flex-direction: row;
+  padding-bottom: 12px;
+  .sender-box-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 12px;
+    border-radius: 20%;
+  }
+  .sender-msg {
+    width: 50vw;
+    line-height: 3vh;
+    font-size: 2vh;
+    margin-left: 12px;
+    background-color: #fff;
+    border-radius: 3%;
+    padding: 8px;
+  }
+}
+</style>
+<template>
+  <view class="sender-box">
+    <image class="sender-box-img" src="{{src}}" />
+    <view class="sender-msg">{{item.msg}}</view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class MyMessage extends wepy.component {
+  props = {
+    item: {},
+    src: String,
+    msg: ''
+  }
+  onLoad () {
+    console.log('on load')
+    console.log('this.item', this.item)
+    console.log('this.src', this.src)
+  }
+}
+</script>

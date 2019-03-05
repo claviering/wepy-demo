@@ -1,0 +1,137 @@
+<style lang="less">
+@import './style/weui.wxss';
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+</style>
+
+<script>
+import wepy from 'wepy'
+import 'wepy-async-function'
+import { setStore, connect } from 'wepy-redux'
+import configStore from './store'
+import { SETINFO } from '@/store/types/userInfo'
+
+const store = configStore()
+setStore(store)
+
+@connect({
+  userInfo (state) {
+    console.log('state in app ', state)
+    return state.userInfo
+  }
+}, {
+  setInfo: SETINFO
+})
+
+export default class extends wepy.app {
+  config = {
+    // 定义路由
+    pages: [
+      // 'pages/index',
+      'pages/index',
+      'pages/chat',
+      'pages/me',
+      'pages/example'
+    ],
+    // 小程序窗口属性
+    window: {
+      backgroundTextStyle: 'light', // 背景文字样式
+      navigationBarBackgroundColor: '#fff', // 导航栏背景颜色
+      navigationBarTitleText: '家教平台', // 导航栏标题
+      navigationBarTextStyle: 'black' // 导航栏标题颜色
+    },
+    // 底部导航栏
+    tabBar: {
+      color: '#AEADAD',
+      selectedColor: '#049BFF',
+      backgroundColor: '#fff',
+      borderStyle: 'black',
+      list: [{
+        pagePath: 'pages/index',
+        iconPath: 'img/home-black.png', // 未选中时图片
+        selectedIconPath: 'img/home-active.png', // 选中时的图片
+        text: '首页'
+      }, {
+        pagePath: 'pages/chat',
+        iconPath: 'img/chat-black.png',
+        selectedIconPath: 'img/chat-active.png',
+        text: '聊天'
+      }, {
+        pagePath: 'pages/me',
+        iconPath: 'img/me-black.png',
+        selectedIconPath: 'img/me-active.png',
+        text: '个人中心'
+      }, {
+        pagePath: 'pages/example',
+        iconPath: 'img/love.png',
+        selectedIconPath: 'img/love.png',
+        text: '例子组件'
+      }]
+    }
+  }
+
+  globalData = {
+  }
+
+  constructor () {
+    super()
+    this.use('requestfix')
+  }
+
+  onLaunch() {
+    this.testAsync()
+    wepy.getUserInfo({
+      success (res) {
+        // 调用 store reducer SETINFO 函数，传递 payload res
+        this.methods.setInfo(res)
+        // store.dispatch({ type: SETINFO, payload: res })
+        // 获取 store 里的数据 store.getState
+        console.log('store.getState()', store.getState())
+      }
+    })
+    wepy.getSystemInfo({
+      success (res) {
+        console.log('system info app onload', res)
+      }
+    })
+  }
+
+  sleep (s) {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        resolve('promise resolved')
+      }, s * 1000)
+    })
+  }
+
+  async testAsync () {
+    const data = await this.sleep(3)
+    console.log(data)
+  }
+
+  getUserInfo(cb) {
+    const that = this
+    if (this.globalData.userInfo) {
+      return this.globalData.userInfo
+    }
+    wepy.getUserInfo({
+      success (res) {
+        that.globalData.userInfo = res.userInfo
+        console.log('userInfo', res)
+        cb && cb(res.userInfo)
+      }
+    })
+    wepy.getSystemInfo({
+      success (res) {
+        console.log('system info res', res)
+      }
+    })
+  }
+}
+</script>

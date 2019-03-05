@@ -1,0 +1,15 @@
+{
+	"description": "A WePY project",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"appid": "wx868a41a9a866eb7c",
+	"projectname": "wepy-deom",
+	"miniprogramRoot": "dist/",
+	"condition": {}
+}

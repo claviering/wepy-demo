@@ -1,0 +1,46 @@
+<style lang='less'>
+view {
+  width: 100%;
+}
+.my-box {
+  display: flex;
+  display: -webkit-box;
+  display: -webkit-flex;
+  flex-direction: row-reverse;
+  padding-bottom: 12px;
+  .my-box-img {
+    width: 40px;
+    height: 40px;
+    border-radius: 20%;
+    margin-right: 12px;
+  }
+  .my-msg {
+    width: 50vw;
+    line-height: 3vh;
+    font-size: 2vh;
+    margin-left: 10px;
+    margin-right: 12px;
+    background-color: #fff;
+    border-radius: 3%;
+    padding: 8px;
+  }
+}
+</style>
+<template>
+  <view class="my-box">
+    <image class="my-box-img" src="{{src}}" />
+    <view class="my-msg">{{item.msg}}</view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class MyMessage extends wepy.component {
+  props = {
+    item: {},
+    src: String
+  }
+  onLoad () {
+    console.log('on load')
+  }
+}
+</script>
