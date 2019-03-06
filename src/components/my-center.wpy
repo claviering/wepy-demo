@@ -1,0 +1,184 @@
+<style lang='less'>
+.weui-toptips_success{
+  background-color: #179B16;
+}
+</style>
+<template>
+  <view wx:if="{{isRegister}}">
+    <view class="weui-toptips weui-toptips_warn" wx:if="{{showTopTips}}">发布失败</view>
+    <view class="weui-cell">
+      <view class="weui-cell__bd">发布信息</view>
+    </view>
+    <view class="weui-cell weui-cell_select">
+      <view class="weui-cell__hd weui-cell__hd_in-select-after">
+        <view class="weui-label">需求</view>
+      </view>
+      <view class="weui-cell__bd">
+        <picker bindchange="bindSelectChange" value="{{selectIndex}}" range="{{select}}">
+          <view class="weui-select weui-select_in-select-after">{{select[selectIndex]}}</view>
+        </picker>
+      </view>
+    </view>
+    <view class="weui-cells__title">标题</view>
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input maxlength="20" class="weui-input" placeholder="" bindinput="bindinputTitle"/>
+            </view>
+        </view>
+    </view>
+    <view class="weui-cells__title">报酬/工资</view>
+    <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+                <input maxlength="20" class="weui-input" placeholder="" bindinput="bindinputMoney"/>
+            </view>
+        </view>
+    </view>
+    <view class="weui-cells__title">选择家教对象/老师要求</view>
+      <view class="weui-cell weui-cell_select">
+          <view class="weui-cell__hd weui-cell__hd_in-select-after">
+              <view class="weui-label">性别要求</view>
+          </view>
+          <view class="weui-cell__bd">
+              <picker bindchange="bindGenderChange" value="{{genderIndex}}" range="{{gender}}">
+                  <view class="weui-select weui-select_in-select-after">{{gender[genderIndex]}}</view>
+              </picker>
+          </view>
+      </view>
+      <view class="weui-cell weui-cell_select">
+          <view class="weui-cell__hd weui-cell__hd_in-select-after">
+              <view class="weui-label">年级要求</view>
+          </view>
+          <view class="weui-cell__bd">
+              <picker bindchange="bindGradeChange" value="{{gradeIndex}}" range="{{grade}}">
+                  <view class="weui-select weui-select_in-select-after">{{grade[gradeIndex]}}</view>
+              </picker>
+          </view>
+      </view>
+    <view class="weui-cells__title">发布摘要</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
+          <textarea maxlength="200" class="weui-textarea" placeholder="" style="height: 3.3em" bindinput="bindinputContent"/>
+          <view class="weui-textarea-counter">{{content.length}}/200</view>
+        </view>
+      </view>
+    </view>
+    <view class="weui-cells__title">详细说明要求等</view>
+    <view class="weui-cells weui-cells_after-title">
+      <view class="weui-cell">
+        <view class="weui-cell__bd">
+          <textarea maxlength="200" class="weui-textarea" placeholder="" style="height: 3.3em" bindinput="bindinputDetail"/>
+          <view class="weui-textarea-counter">{{detail.length}}/200</view>
+        </view>
+      </view>
+    </view>
+     <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" bindtap="submit">发布</button>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import server from '@/server/index.js'
+import { setStore } from 'wepy-redux'
+import configStore from '@/store'
+
+const store = configStore()
+setStore(store)
+
+export default class MyCenter extends wepy.component {
+  data = {
+    select: ['找老师', '找学生'],
+    selectIndex: 0,
+    gender: ['男孩', '女孩'],
+    genderIndex: 0,
+    grade: ['小学', '初中', '高中', '大学'],
+    gradeIndex: 0,
+    showTopTips: false,
+    title: '',
+    content: '',
+    detail: '',
+    info: '',
+    money: '',
+    userInfo: {}
+  }
+  props = {
+    isRegister: String
+  }
+  onLoad () {
+    console.log('on load')
+    console.log('store.getState() in my center', store.getState())
+    this.userInfo = store.getState().userInfo
+    console.log('this.userInfo', this.userInfo)
+    console.log('this.isRegister my center', this.isRegister)
+  }
+  methods = {
+    showTopTips() {
+      this.showTopTips = true
+      setTimeout(() => {
+        this.showTopTips = false
+        this.$apply()
+      }, 3000)
+    },
+    submit() {
+      let params = {
+        title: this.title,
+        author: this.userInfo.nickName,
+        content: this.content,
+        detail: this.detail,
+        money: this.money,
+        info: this.select[this.selectIndex],
+        gender: this.gender[this.genderIndex],
+        grade: this.grade[this.gradeIndex]
+      }
+      console.log('提交的表单信息', params)
+      if (!params.title || !params.content) {
+        wx.showToast({
+          title: '请补充信息',
+          icon: 'loading',
+          duration: 500
+        })
+        return
+      }
+      server.post('/addinfo', params, (res) => {
+        if (!res.data.success) {
+          wx.showToast({
+            title: '发布失败',
+            icon: 'loading',
+            duration: 1500
+          })
+        } else {
+          wx.showToast({
+            title: '发布成功',
+            icon: 'success',
+            duration: 1500
+          })
+        }
+      })
+    },
+    bindinputTitle(e) {
+      this.title = e.detail.value
+    },
+    bindinputContent(e) {
+      this.content = e.detail.value
+    },
+    bindinputDetail(e) {
+      this.detail = e.detail.value
+    },
+    bindinputMoney(e) {
+      this.money = e.detail.value
+    },
+    bindSelectChange(e) {
+      this.selectIndex = e.detail.value
+    },
+    bindGenderChange(e) {
+      this.genderIndex = e.detail.value
+    },
+    bindGradeChange(e) {
+      this.gradeIndex = e.detail.value
+    }
+  }
+}
+</script>

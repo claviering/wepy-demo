@@ -16,6 +16,7 @@ import 'wepy-async-function'
 import { setStore, connect } from 'wepy-redux'
 import configStore from './store'
 import { SETINFO } from '@/store/types/userInfo'
+// import server from '@/server/index.js'
 
 const store = configStore()
 setStore(store)
@@ -33,18 +34,25 @@ export default class extends wepy.app {
   config = {
     // 定义路由
     pages: [
-      // 'pages/index',
       'pages/index',
-      'pages/chat',
+      'pages/contacts',
       'pages/me',
-      'pages/example'
+      'routers/info-detail',
+      'routers/chat'
     ],
+    // 位置授权提示信息
+    permission: {
+      'scope.userLocation': {
+        desc: '你的位置信息将用于小程序位置接口的效果展示'
+      }
+    },
     // 小程序窗口属性
     window: {
       backgroundTextStyle: 'light', // 背景文字样式
       navigationBarBackgroundColor: '#fff', // 导航栏背景颜色
       navigationBarTitleText: '家教平台', // 导航栏标题
-      navigationBarTextStyle: 'black' // 导航栏标题颜色
+      navigationBarTextStyle: 'black', // 导航栏标题颜色
+      enablePullDownRefresh: true // 下来刷新
     },
     // 底部导航栏
     tabBar: {
@@ -58,7 +66,7 @@ export default class extends wepy.app {
         selectedIconPath: 'img/home-active.png', // 选中时的图片
         text: '首页'
       }, {
-        pagePath: 'pages/chat',
+        pagePath: 'pages/contacts',
         iconPath: 'img/chat-black.png',
         selectedIconPath: 'img/chat-active.png',
         text: '聊天'
@@ -67,11 +75,6 @@ export default class extends wepy.app {
         iconPath: 'img/me-black.png',
         selectedIconPath: 'img/me-active.png',
         text: '个人中心'
-      }, {
-        pagePath: 'pages/example',
-        iconPath: 'img/love.png',
-        selectedIconPath: 'img/love.png',
-        text: '例子组件'
       }]
     }
   }
@@ -83,53 +86,65 @@ export default class extends wepy.app {
     super()
     this.use('requestfix')
   }
-
   onLaunch() {
-    this.testAsync()
     wepy.getUserInfo({
       success (res) {
+        console.log('用户信息', res)
         // 调用 store reducer SETINFO 函数，传递 payload res
         this.methods.setInfo(res)
+        // 调用 store reducer SETINFO 函数，传递 payload res
         // store.dispatch({ type: SETINFO, payload: res })
         // 获取 store 里的数据 store.getState
         console.log('store.getState()', store.getState())
       }
     })
+    // 用户登录
+    // wepy.login({
+    //   success (res) {
+    //     console.log('用户用户登录凭证', res.code)
+    //     server.post('/login', {code: res.code}, (res) => {
+    //       console.log('post res', res)
+    //     })
+    //   }
+    // })
+    // 获取用户信息
+    // 接口会同时返回 rawData、signature，其中 signature = sha1( rawData + session_key )
+    // 开发者将 signature、rawData 发送到开发者服务器进行校验。服务器利用用户对应的 session_key 使用相同的算法计算出签名 signature2 ，比对 signature 与 signature2 即可校验数据的完整性。
+    // wepy.getUserInfo({
+    //   withCredentials: true, // 已经登录返回敏感信息
+    //   success (res) {
+    //     console.log('用户信息', res)
+    //     server.post('/dec', res, (result) => {
+    //       console.log('post result', result)
+    //     })
+    //   }
+    // })
+    // 获取系统信息
     wepy.getSystemInfo({
       success (res) {
-        console.log('system info app onload', res)
+        console.log('系统信息', res)
       }
     })
-  }
-
-  sleep (s) {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        resolve('promise resolved')
-      }, s * 1000)
-    })
-  }
-
-  async testAsync () {
-    const data = await this.sleep(3)
-    console.log(data)
-  }
-
-  getUserInfo(cb) {
-    const that = this
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo
-    }
-    wepy.getUserInfo({
-      success (res) {
-        that.globalData.userInfo = res.userInfo
-        console.log('userInfo', res)
-        cb && cb(res.userInfo)
+    // 获取用户授权
+    // 返回值中只会出现小程序已经向用户请求过的权限
+    wepy.getSetting({
+      success(res) {
+        console.log('用户授权信息', res.authSetting)
       }
     })
-    wepy.getSystemInfo({
-      success (res) {
-        console.log('system info res', res)
+    // 打开设置界面，引导用户开启授权
+    wepy.openSetting({
+      success(res) {
+        console.log('请用户授权', res.authSetting)
+      }
+    })
+    // 向用户申请授权
+    // 申请用户位置权
+    // 更多授权信息 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/authorize.html
+    wepy.authorize({
+      scope: 'scope.userLocation',
+      success(res) {
+        console.log('请用户授权', res.authSetting)
       }
     })
   }

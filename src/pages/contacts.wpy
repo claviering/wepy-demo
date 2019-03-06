@@ -1,0 +1,32 @@
+<style lang='less'>
+.chat-room{
+  padding-top: 12px;
+  display: flex;
+  flex-direction: column;
+  .img{
+    border-radius: 20%;
+  }
+}
+</style>
+<template>
+  <view class="chat-room">
+    <repeat for="{{list}}" key="index" index="index" item="item">
+      <contact :item="item"></contact>
+    </repeat>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+import Contact from '@/components/contact'
+export default class Chat extends wepy.page {
+  data = {
+    list: [{id: 1, title: 'title1', msg: '信息1', src: 'https://wx.qlogo.cn/mmopen/vi_32/Uw3LZaPWYHdqk34RMOBAr3BV8B6yysPLpNmw2YBRDoicbs60FIxvEcWiaEc3dIxoJiacXaRBMTBxYsoPOASg0TgtQ/132'}, {id: 2, title: 'title2', msg: '信息2', src: 'https://wx.qlogo.cn/mmopen/vi_32/Uw3LZaPWYHdqk34RMOBAr3BV8B6yysPLpNmw2YBRDoicbs60FIxvEcWiaEc3dIxoJiacXaRBMTBxYsoPOASg0TgtQ/132'}, {id: 3, title: 'title3', msg: '信息3', src: 'https://wx.qlogo.cn/mmopen/vi_32/Uw3LZaPWYHdqk34RMOBAr3BV8B6yysPLpNmw2YBRDoicbs60FIxvEcWiaEc3dIxoJiacXaRBMTBxYsoPOASg0TgtQ/132'}, {id: 4, title: 'title4', msg: '信息4', src: 'https://wx.qlogo.cn/mmopen/vi_32/Uw3LZaPWYHdqk34RMOBAr3BV8B6yysPLpNmw2YBRDoicbs60FIxvEcWiaEc3dIxoJiacXaRBMTBxYsoPOASg0TgtQ/132'}]
+  }
+  components = {
+    contact: Contact
+  }
+  onLoad() {
+    console.log('全部联系人 onload')
+  }
+}
+</script>

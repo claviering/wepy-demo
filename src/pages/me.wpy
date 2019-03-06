@@ -1,103 +1,49 @@
 <style lang='less'>
 </style>
 <template>
-  <view>
-    <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell">
-          <view class="weui-cell__bd">注册信息</view>
-      </view>
-    </view>
-    <view class="weui-cells__title">选择</view>
-    <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_select">
-        <view class="weui-cell__hd" style="width: 105px">
-          <picker
-            bindchange="bindCountryCodeChange"
-            value="{{countryCodeIndex}}"
-            range="{{countryCodes}}"
-          >
-            <view class="weui-select">{{countryCodes[countryCodeIndex]}}</view>
-          </picker>
-        </view>
-        <view class="weui-cell__bd weui-cell__bd_in-select-before">
-          <input class="weui-input" placeholder="请输入号码" />
-        </view>
-      </view>
-    </view>
-
-    <view class="weui-cells__title">选择</view>
-    <view class="weui-cells weui-cells_after-title">
-      <view class="weui-cell weui-cell_select">
-        <view class="weui-cell__bd">
-          <picker bindchange="bindAccountChange" value="{{accountIndex}}" range="{{accounts}}">
-            <view class="weui-select">{{accounts[accountIndex]}}</view>
-          </picker>
-        </view>
-      </view>
-      <view class="weui-cell weui-cell_select">
-        <view class="weui-cell__hd weui-cell__hd_in-select-after">
-          <view class="weui-label">国家/地区</view>
-        </view>
-        <view class="weui-cell__bd">
-          <picker bindchange="bindCountryChange" value="{{countryIndex}}" range="{{countries}}">
-            <view class="weui-select weui-select_in-select-after">{{countries[countryIndex]}}</view>
-          </picker>
-        </view>
-      </view>
-    </view>
-
-    <checkbox-group bindchange="bindAgreeChange">
-      <label class="weui-agree" for="weuiAgree">
-        <view class="weui-agree__text">
-          <checkbox
-            class="weui-agree__checkbox"
-            id="weuiAgree"
-            value="agree"
-            checked="{{isAgree}}"
-          />
-          <view class="weui-agree__checkbox-icon">
-            <icon
-              class="weui-agree__checkbox-icon-check"
-              type="success_no_circle"
-              size="9"
-              wx:if="{{isAgree}}"
-            ></icon>
-          </view>阅读并同意
-          <navigator url class="weui-agree__link">《相关条款》</navigator>
-        </view>
-      </label>
-    </checkbox-group>
-
-    <view class="weui-btn-area">
-      <button class="weui-btn" type="primary" bindtap="showTopTips">确定</button>
-    </view>
-  </view>
+<view>
+    <register :isRegister.sync="isRegister"></register>
+    <myCenter :isRegister.sync="isRegister"></myCenter>
+</view>
 </template>
 <script>
 import wepy from 'wepy'
+import server from '@/server/index.js'
+import Register from '@/components/register'
+import MyCenter from '@/components/my-center'
+
 export default class Me extends wepy.page {
   data = {
     showTopTips: false,
-    radioItems: [
-      { name: 'cell standard', value: '0' },
-      { name: 'cell standard', value: '1', checked: true }
-    ],
-    checkboxItems: [
-      { name: 'standard is dealt for u.', value: '0', checked: true },
-      { name: 'standard is dealicient for u.', value: '1' }
-    ],
-    date: '2016-09-01',
-    time: '12:01',
-    countryCodes: ['+86', '+80', '+84', '+87'],
-    countryCodeIndex: 0,
     countries: ['中国', '美国', '英国'],
     countryIndex: 0,
-    accounts: ['微信号', 'QQ', 'Email'],
-    accountIndex: 0,
-    isAgree: false
-  };
+    gender: ['男', '女', '其他'],
+    genderIndex: 0,
+    mobile: '',
+    qq: '',
+    userName: '',
+    isAgree: false,
+    isRegister: '',
+    code: ''
+  }
+  components = {
+    register: Register,
+    myCenter: MyCenter
+  }
   onLoad() {
-    console.log('路由 1 onload')
+    console.log('我的页面 onload')
+    console.log('this', this)
+    let _this = this
+    wepy.login({
+      success (res) {
+        this.code = res.code
+        server.post('/login', {code: res.code}, (res) => {
+          console.log('this', this)
+          _this.isRegister = 'ok'
+          _this.$apply()
+        })
+      }
+    })
   }
 }
 </script>

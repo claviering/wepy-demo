@@ -1,0 +1,27 @@
+<style lang='less'>
+  .img{
+    border-radius: 20%;
+  }
+</style>
+<template>
+  <navigator class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" url="/routers/chat">
+      <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+          <image class="weui-media-box__thumb img" src="{{item.src}}" />
+      </view>
+      <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+          <view class="weui-media-box__title">{{item.title}}</view>
+          <view class="weui-media-box__desc">{{item.msg}}</view>
+      </view>
+  </navigator>
+</template>
+<script>
+import wepy from 'wepy'
+export default class Chat extends wepy.component {
+  props = {
+    item: {}
+  }
+  onLoad() {
+    console.log('单人联系人 onload')
+  }
+}
+</script>

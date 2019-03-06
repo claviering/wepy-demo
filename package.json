@@ -5,6 +5,7 @@
   "main": "dist/app.js",
   "scripts": {
     "dev": "wepy build --watch",
+    "server": "DEBUG=app*,socket.io* nodemon app.js",
     "build": "cross-env NODE_ENV=production wepy build --no-cache",
     "dev:web": "wepy build --output web",
     "clean": "find ./dist -maxdepth 1 -not -name 'project.config.json' -not -name 'dist' | xargs rm -rf",
@@ -17,13 +18,25 @@
   "author": "claviering <claviering@gmail.com>",
   "license": "MIT",
   "dependencies": {
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "connect-redis": "^3.4.0",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.16.4",
+    "express-session": "^1.15.6",
+    "ip": "^1.1.5",
+    "log4js": "^4.0.2",
+    "mongoose": "^5.4.17",
+    "redis": "^2.8.0",
+    "socket.io": "^2.2.0",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",
-    "wepy-redux": "^1.5.3",
+    "weapp.socket.io": "^2.0.1",
     "wepy": "^1.6.0",
     "wepy-async-function": "^1.4.4",
-    "wepy-com-toast": "^1.0.2"
+    "wepy-com-toast": "^1.0.2",
+    "wepy-redux": "^1.5.3"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.1",
@@ -39,6 +52,7 @@
     "eslint-plugin-html": "^2.0.1",
     "eslint-plugin-promise": "^3.5.0",
     "eslint-plugin-standard": "^2.0.1",
+    "debug": "^4.1.1",
     "wepy-eslint": "^1.5.3",
     "less": "^3.8.1",
     "wepy-compiler-babel": "^1.5.1",

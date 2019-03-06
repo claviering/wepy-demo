@@ -15,6 +15,7 @@ view {
     height: 40px;
     margin-right: 12px;
     border-radius: 20%;
+    margin-left: 12px;
   }
   .sender-msg {
     width: 50vw;

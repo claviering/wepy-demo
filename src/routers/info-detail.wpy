@@ -1,0 +1,65 @@
+<style lang='less'>
+</style>
+<template>
+  <view>
+    <view class="weui-form-preview">
+      <view class="weui-form-preview__hd">
+        <view class="weui-form-preview__label">{{info.title}}</view>
+        <view class="weui-form-preview__value_in-hd">¥{{money}}</view>
+      </view>
+      <view class="weui-form-preview__bd">
+        <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label">{{info.object}}</view>
+          <view class="weui-form-preview__value">{{grade}}</view>
+        </view>
+        <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label">{{info.gender}}</view>
+          <view class="weui-form-preview__value">{{gender}}</view>
+        </view>
+        <view class="weui-form-preview__item">
+          <view class="weui-form-preview__label">{{info.description}}</view>
+          <view class="weui-form-preview__value">{{detail}}</view>
+        </view>
+      </view>
+      <view class="weui-form-preview__ft">
+        <navigator
+          class="weui-form-preview__btn weui-form-preview__btn_default"
+          hover-class="weui-form-preview__btn_active"
+        >{{info.buttonleft}}</navigator>
+        <navigator
+          class="weui-form-preview__btn weui-form-preview__btn_primary"
+          hover-class="weui-form-preview__btn_active"
+        >{{info.buttonRight}}</navigator>
+      </view>
+    </view>
+  </view>
+</template>
+<script>
+import wepy from 'wepy'
+export default class InfoDetail extends wepy.page {
+  data = {
+    money: '10',
+    detail: '10',
+    gender: '10',
+    grade: '10',
+    options: {},
+    info: {
+      title: '家教报酬',
+      object: '家教对象',
+      gender: '小孩性别',
+      age: '小孩年龄',
+      description: '家教详细要求说明',
+      buttonleft: '发起聊天',
+      buttonRight: '我要家教'
+    }
+  }
+  methods = {
+  }
+  onLoad(options) {
+    this.money = options.money
+    this.detail = options.detail
+    this.gender = options.gender
+    this.grade = options.grade
+  }
+}
+</script>

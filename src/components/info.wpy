@@ -1,0 +1,29 @@
+<style lang='less'>
+</style>
+<template>
+  <navigator url="/routers/info-detail?money={{item.money}}&grade={{item.grade}}&gender={{item.gender}}&detail={{item.detail}}">
+    <view class="weui-panel">
+      <view class="weui-panel__bd">
+        <view class="weui-media-box weui-media-box_text">
+          <view class="weui-media-box__title weui-media-box__title_in-text">{{item.title}}</view>
+          <view class="weui-media-box__desc">{{item.content}}</view>
+          <view class="weui-media-box__info">
+            <view class="weui-media-box__info__meta">发布作者: {{item.author}}</view>
+            <view class="weui-media-box__info__meta">发布时间: {{item.createTime}}</view>
+            <view class="weui-media-box__info__meta weui-media-box__info__meta_extra">需求: {{item.info}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </navigator>
+</template>
+<script>
+import wepy from 'wepy'
+export default class Index extends wepy.component {
+  props = {
+    item: {}
+  }
+  onLoad() {
+  }
+}
+</script>

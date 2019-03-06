@@ -1,34 +1,49 @@
 <style lang='less'>
-
 </style>
 <template>
   <view>
-    <view class="weui-cells weui-cells_after-title">
-        <view class="weui-cell">
-            <view class="weui-cell__bd">最新信息</view>
-        </view>
-    </view>
     <repeat for="{{list}}" key="index" index="index" item="item">
-      <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-          <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-              <image class="weui-media-box__thumb" src="{{src}}" />
-          </view>
-          <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-              <view class="weui-media-box__title">{{item.title}}</view>
-              <view class="weui-media-box__desc">{{item.msg}}</view>
-          </view>
-      </navigator>
+      <info :item="item"></info>
     </repeat>
   </view>
 </template>
 <script>
   import wepy from 'wepy'
+  import Info from '@/components/info'
+  import server from '@/server/index.js'
   export default class Index extends wepy.page {
     data = {
-      src: 'https://wx.qlogo.cn/mmopen/vi_32/Uw3LZaPWYHdqk34RMOBAr3BV8B6yysPLpNmw2YBRDoicbs60FIxvEcWiaEc3dIxoJiacXaRBMTBxYsoPOASg0TgtQ/132',
-      list: [{id: 1, title: 'title1', msg: '信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1信息1'}, {id: 2, title: 'title2', msg: '信息2'}, {id: 3, title: 'title3', msg: '信息3'}, {id: 4, title: 'title4', msg: '信息4'}]
+      list: []
+    }
+    components = {
+      info: Info
+    }
+    methods = {
+      async getData(_this) {
+        server.get('/getinfo', {}, (res) => {
+          console.log('res.data', res.data)
+          if (res && res.data && Array.isArray(res.data)) {
+            _this.list = res.data
+            _this.$apply()
+          } else {
+            _this.list = []
+            _this.$apply()
+          }
+          wepy.hideNavigationBarLoading()
+          wepy.stopPullDownRefresh()
+          console.log('hideNavigationBarLoading')
+        })
+      }
+    }
+    onPullDownRefresh() {
+      let _this = this
+      console.log('_this onPullDownRefresh', _this)
+      wepy.showNavigationBarLoading()
+      this.methods.getData(_this)
     }
     onLoad() {
+      let _this = this
+      this.methods.getData(_this)
       console.log('首页 onload')
     }
   }
