@@ -1,9 +1,16 @@
 # 全栈小程序 demo
 
+实现基本路由，状态管理，Websocket
+
 ## Nodejs
 
-nodejs >= 10
+`nodejs >= 10`
 
+## 目录
+
+前端源代码 `src/`
+
+Nodejs 后端源代码 `app/`
 
 ## 说明
 
@@ -73,7 +80,7 @@ npm run dev
 
 ## 微信小程序前端 UI 组件
 
-[Github](https://github.com/Tencent/weui-wxss)
+weui-wxss [Github](https://github.com/Tencent/weui-wxss)
 
 下载之后用微信开发者工具直接打开 dist 目录，要用什么组件直接复制粘贴
 
